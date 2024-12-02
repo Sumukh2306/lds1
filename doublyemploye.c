@@ -1,7 +1,8 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
+// Define the structure for an employee
 struct employee {
     int id;
     char name[50];
@@ -11,16 +12,17 @@ struct employee {
 };
 typedef struct employee *EMP;
 
+// Function to create a new node
 EMP getnode() {
-    EMP x;
-    x = (EMP)malloc(sizeof(struct employee));
+    EMP x = (EMP)malloc(sizeof(struct employee));
     if (x == NULL) {
-        printf("Memory full");
+        printf("Memory full\n");
         exit(0);
     }
     return x;
 }
 
+// Function to insert a node at the front
 EMP insertfront(EMP first, int id, char name[], float salary) {
     EMP temp = getnode();
     temp->id = id;
@@ -34,6 +36,7 @@ EMP insertfront(EMP first, int id, char name[], float salary) {
     return temp;
 }
 
+// Function to insert a node at the rear
 EMP insertrear(EMP first, int id, char name[], float salary) {
     EMP temp = getnode();
     temp->id = id;
@@ -51,47 +54,49 @@ EMP insertrear(EMP first, int id, char name[], float salary) {
     return first;
 }
 
+// Function to delete a node from the front
 EMP deletefront(EMP first) {
     if (first == NULL) {
-        printf("Empty\n");
+        printf("List is empty\n");
         return NULL;
     }
     if (first->rlink == NULL) {
-        printf("The employee deleted is ID: %d, Name: %s, Salary: %.2f\n", first->id, first->name, first->salary);
+        printf("Employee deleted: ID: %d, Name: %s, Salary: %.2f\n", first->id, first->name, first->salary);
         free(first);
         return NULL;
     }
     EMP second = first->rlink;
-    printf("The employee deleted is ID: %d, Name: %s, Salary: %.2f\n", first->id, first->name, first->salary);
+    printf("Employee deleted: ID: %d, Name: %s, Salary: %.2f\n", first->id, first->name, first->salary);
     free(first);
     second->llink = NULL;
     return second;
 }
 
+// Function to delete a node from the rear
 EMP deleterear(EMP first) {
     if (first == NULL) {
-        printf("Empty\n");
-        return first;
+        printf("List is empty\n");
+        return NULL;
     }
     if (first->rlink == NULL) {
-        printf("The employee deleted is ID: %d, Name: %s, Salary: %.2f\n", first->id, first->name, first->salary);
+        printf("Employee deleted: ID: %d, Name: %s, Salary: %.2f\n", first->id, first->name, first->salary);
         free(first);
         return NULL;
     }
-    EMP cur = first, prev = NULL;
+    EMP cur = first;
     while (cur->rlink != NULL) {
-        prev = cur;
         cur = cur->rlink;
     }
-    printf("The employee deleted is ID: %d, Name: %s, Salary: %.2f\n", cur->id, cur->name, cur->salary);
+    printf("Employee deleted: ID: %d, Name: %s, Salary: %.2f\n", cur->id, cur->name, cur->salary);
+    cur->llink->rlink = NULL;
     free(cur);
-    prev->rlink = NULL;
     return first;
 }
 
+// Function to display all nodes
 void display(EMP first) {
     if (first == NULL) {
-        printf("Empty\n");
+        printf("List is empty\n");
         return;
     }
     EMP cur = first;
@@ -101,24 +106,24 @@ void display(EMP first) {
     }
 }
 
+// Function to search for an employee by ID
 void search(EMP first, int id) {
     if (first == NULL) {
         printf("List is empty. Employee not found.\n");
         return;
     }
-
     EMP cur = first;
     while (cur != NULL) {
         if (cur->id == id) {
-            printf("Employee found. ID: %d, Name: %s, Salary: %.2f\n", cur->id, cur->name, cur->salary);
+            printf("Employee found: ID: %d, Name: %s, Salary: %.2f\n", cur->id, cur->name, cur->salary);
             return;
         }
         cur = cur->rlink;
     }
-
     printf("Employee not found.\n");
 }
 
+// Main function
 int main() {
     EMP first = NULL;
     int op, id;
@@ -126,8 +131,19 @@ int main() {
     float salary;
 
     for (;;) {
-        printf("\nMenu\n 1:Insert front\n 2:Insert rear\n 3:Delete front\n 4:Delete rear\n 5:Display\n 6:Search\n 7:Exit\n");
-        scanf("%d", &op);
+        printf("\nMenu\n");
+        printf("1: Insert front\n");
+        printf("2: Insert rear\n");
+        printf("3: Delete front\n");
+        printf("4: Delete rear\n");
+        printf("5: Display\n");
+        printf("6: Search\n");
+        printf("7: Exit\n");
+        printf("Enter your choice: ");
+        if (scanf("%d", &op) != 1) {
+            printf("Invalid input. Exiting.\n");
+            break;
+        }
 
         switch (op) {
             case 1:
@@ -154,7 +170,12 @@ int main() {
                 scanf("%d", &id);
                 search(first, id);
                 break;
-            default:
+            case 7:
+                printf("Exiting program.\n");
                 exit(0);
+            default:
+                printf("Invalid option. Please try again.\n");
         }
     }
+    return 0;
+}
