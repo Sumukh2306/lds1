@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <sys/wait.h> // Include for the wait function
 
 // Function for threads to print the 6-table
 void* printTable(void* arg) {
@@ -27,6 +28,10 @@ int main() {
         pthread_t threads[5];
         for (int i = 0; i < 5; i++) {
             int* thread_num = malloc(sizeof(int));
+            if (thread_num == NULL) {
+                perror("Memory allocation failed");
+                exit(EXIT_FAILURE);
+            }
             *thread_num = i + 1; // Thread number (1 to 5)
             if (pthread_create(&threads[i], NULL, printTable, thread_num) != 0) {
                 perror("Failed to create thread");
