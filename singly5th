@@ -1,0 +1,167 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct node {
+    int data;
+    struct node* next;
+};
+
+typedef struct node* NODE;
+
+// Function to create a new node
+NODE getnode() {
+    NODE temp = (NODE)malloc(sizeof(struct node));
+    if (temp == NULL) {
+        printf("Memory allocation failed\n");
+        exit(1);
+    }
+    temp->next = NULL;
+    return temp;
+}
+
+// Insert at the front
+NODE insertFront(NODE head, int data) {
+    NODE temp = getnode();
+    temp->data = data;
+
+    if (head == NULL) { // If the list is empty
+        temp->next = temp; // Point to itself
+        return temp;
+    }
+
+    NODE cur = head;
+    while (cur->next != head) { // Traverse to the last node
+        cur = cur->next;
+    }
+    cur->next = temp;
+    temp->next = head;
+    return temp; // New head
+}
+
+// Insert at the rear
+NODE insertRear(NODE head, int data) {
+    NODE temp = getnode();
+    temp->data = data;
+
+    if (head == NULL) { // If the list is empty
+        temp->next = temp; // Point to itself
+        return temp;
+    }
+
+    NODE cur = head;
+    while (cur->next != head) { // Traverse to the last node
+        cur = cur->next;
+    }
+    cur->next = temp;
+    temp->next = head; // Maintain circular link
+    return head;
+}
+
+// Delete from the rear
+NODE deleteRear(NODE head) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return NULL;
+    }
+
+    if (head->next == head) { // Only one node in the list
+        printf("Deleted element: %d\n", head->data);
+        free(head);
+        return NULL;
+    }
+
+    NODE cur = head, prev = NULL;
+    // Traverse the list until the node before the last node
+    while (cur->next != head) { 
+        prev = cur;
+        cur = cur->next;
+    }
+
+    printf("Deleted element: %d\n", cur->data);
+    prev->next = head; // Update the link to maintain circular reference
+    free(cur); // Free the last node
+    return head;
+}
+
+// Display the list
+void display(NODE head) {
+    if (head == NULL) {
+        printf("List is empty\n");
+        return;
+    }
+
+    NODE cur = head;
+    printf("List: ");
+    do {
+        printf("%d ", cur->data);
+        cur = cur->next;
+    } while (cur != head);
+    printf("\n");
+}
+
+// Create a circular reference to the 5th node
+NODE createCircularReference(NODE head) {
+    if (head == NULL) {
+        printf("List is empty, cannot create circular reference.\n");
+        return head;
+    }
+
+    NODE fifth = NULL, cur = head;
+    int count = 1;
+    while (cur->next != head) { // Traverse the list
+        if (count == 5) {
+            fifth = cur; // Capture the 5th node
+        }
+        cur = cur->next;
+        count++;
+    }
+
+    if (fifth != NULL) {
+        cur->next = fifth; // Create circular reference to the 5th node
+        printf("Last node now points to the 5th node with data: %d\n", fifth->data);
+    } else {
+        printf("List has fewer than 5 nodes, circular reference not created.\n");
+    }
+    return head;
+}
+
+// Main function
+int main() {
+    NODE head = NULL;
+    int choice, data;
+
+    while (1) {
+        printf("\nMenu\n");
+        printf("1. Insert Front\n2. Insert Rear\n3. Delete Rear\n4. Display\n5. Create Circular Reference\n6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("Enter data to insert at front: ");
+                scanf("%d", &data);
+                head = insertFront(head, data);
+                break;
+            case 2:
+                printf("Enter data to insert at rear: ");
+                scanf("%d", &data);
+                head = insertRear(head, data);
+                break;
+            case 3:
+                head = deleteRear(head);
+                break;
+            case 4:
+                display(head);
+                break;
+            case 5:
+                head = createCircularReference(head);
+                break;
+            case 6:
+                exit(0);
+            default:
+                printf("Invalid choice\n");
+        }
+    }
+    return 0;
+}
